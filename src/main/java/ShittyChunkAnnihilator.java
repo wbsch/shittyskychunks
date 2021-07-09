@@ -119,6 +119,7 @@ public class ShittyChunkAnnihilator implements Listener {
                         // Might be faster, depending on how getHighestBlockAt() is implemented:
                         // h = world.getHighestBlockAt()
                         var toDelete = new LinkedList<Block>();
+                        var potentialWarpedForest = false;
                         for (int h = 254; h >= 0; h--) {
                             for (int i = 0; i < 16; i++) {
                                 for (int j = 0; j < 16; j++) {
@@ -130,6 +131,10 @@ public class ShittyChunkAnnihilator implements Listener {
                                         return;
                                     }
 
+                                    if (blockType == WARPED_NYLIUM) {
+                                        potentialWarpedForest = true;
+                                    }
+
                                     if (blockType != AIR) {
                                         toDelete.add(block);
                                     }
@@ -137,10 +142,15 @@ public class ShittyChunkAnnihilator implements Listener {
                             }
                         }
 
+                        if (potentialWarpedForest && random.nextFloat() < 0.05) {
+                            // Keep this whole chunk; warped forests look freaking amazing!
+                            return;
+                        }
+
                         queue.add(toDelete);
                     }
 
-                    Bukkit.getServer().getConsoleSender().sendMessage("ShittySkyChunk Annihilator enqueue took " + (System.currentTimeMillis() - startTime) + "ms");
+                    // Bukkit.getServer().getConsoleSender().sendMessage("ShittySkyChunk Annihilator enqueue took " + (System.currentTimeMillis() - startTime) + "ms");
                 }
             };
 
