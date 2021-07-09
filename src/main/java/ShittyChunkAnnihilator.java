@@ -35,7 +35,7 @@ public class ShittyChunkAnnihilator implements Listener {
                     var x = chunk.getX() * 16;
                     var z = chunk.getZ() * 16;
 
-                    final var preservedBlocks = Set.of(
+                    final var preservedBlocksOverworld = Set.of(
                             BLACK_BED, // (Partial) villages and possibly villagers
                             BLUE_BED,
                             BROWN_BED,
@@ -63,9 +63,14 @@ public class ShittyChunkAnnihilator implements Listener {
                             CHEST, // (Partial) ruined portals, (partial) villages, hidden treasure
                             CHEST_MINECART, // Mineshafts
                             END_PORTAL_FRAME,
+                            SPAWNER
+                    );
+
+                    final var preservedBlocksNether = Set.of(
+                            CHEST, // (Partial) ruined portals, (partial) villages, hidden treasure
                             NETHER_PORTAL, // Ensure the players don't immediately fall to their deaths in the nether
                             NETHER_BRICKS, // Nether fortresses (contain blaze spawners!)
-                            SPAWNER
+                            SPAWNER // Blaze spawners
                     );
 
                     // Link the deleted chunks to the world seed; make sure the random number generator actually
@@ -100,11 +105,19 @@ public class ShittyChunkAnnihilator implements Listener {
                         return;
                     }
 
+                    var isOverworld = false;
+                    var isNether = false;
+                    if (world.getName().endsWith("_nether")) {
+                        isNether = true;
+                    } else {
+                        isOverworld = true;
+                    }
+
                     var spawnBlock = world.getBlockAt(world.getSpawnLocation());
                     var spawnChunk = spawnBlock.getChunk();
 
                     if (chunk.getChunkKey() == spawnChunk.getChunkKey()) {  // FIXME: Check whether this actually works!
-                        for (var player: Bukkit.getServer().getOnlinePlayers()) {
+                        for (var player : Bukkit.getServer().getOnlinePlayers()) {
                             // For some seed and paper versions, the player can spawn in a chunk next to the
                             // spawn chunk; teleport them to the actual spawn chunk in order to make sure they don't
                             // die
@@ -126,13 +139,20 @@ public class ShittyChunkAnnihilator implements Listener {
                                     var block = world.getBlockAt(x + i, h, z + j);
                                     var blockType = block.getType();
 
-                                    if (preservedBlocks.contains(blockType)) {
-                                        // Keep this whole chunk; there's something of interest here!
-                                        return;
-                                    }
+                                    // Keep whole chunks if there's something of interest in there
+                                    if (isOverworld) {
+                                        if (preservedBlocksOverworld.contains(blockType)) {
+                                            return;
+                                        }
+                                    } else if (isNether) {
+                                        if (preservedBlocksNether.contains(blockType)) {
+                                            return;
+                                        }
 
-                                    if (blockType == WARPED_NYLIUM) {
-                                        potentialWarpedForest = true;
+                                        // Flag chunks containing warped nylium; potentially keep them below
+                                        if (blockType == WARPED_NYLIUM) {
+                                            potentialWarpedForest = true;
+                                        }
                                     }
 
                                     if (blockType != AIR) {
