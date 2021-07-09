@@ -52,11 +52,19 @@ public class ShittyChunkAnnihilator implements Listener {
                             RED_BED,
                             WHITE_BED,
                             YELLOW_BED,
+                            ACACIA_DOOR,
+                            BIRCH_DOOR,
+                            CRIMSON_DOOR,
+                            DARK_OAK_DOOR,
+                            JUNGLE_DOOR,
+                            OAK_DOOR,
+                            SPRUCE_DOOR,
+                            WARPED_DOOR,
                             CHEST, // (Partial) ruined portals, (partial) villages, hidden treasure
                             CHEST_MINECART, // Mineshafts
                             END_PORTAL_FRAME,
                             NETHER_PORTAL, // Ensure the players don't immediately fall to their deaths in the nether
-                            NETHER_BRICK, // Nether fortresses (contain blaze spawners!)
+                            NETHER_BRICKS, // Nether fortresses (contain blaze spawners!)
                             SPAWNER
                     );
 
