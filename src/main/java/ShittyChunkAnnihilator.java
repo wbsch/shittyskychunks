@@ -63,14 +63,15 @@ public class ShittyChunkAnnihilator implements Listener {
                             CHEST, // (Partial) ruined portals, (partial) villages, hidden treasure
                             CHEST_MINECART, // Mineshafts
                             END_PORTAL_FRAME,
+                            NETHER_PORTAL, // Ensure the players don't immediately fall to their deaths when returning
                             SPAWNER
                     );
 
                     final var preservedBlocksNether = Set.of(
-                            CHEST, // (Partial) ruined portals, (partial) villages, hidden treasure
+                            CHEST, // (Partial) bastions / fortresses
                             NETHER_PORTAL, // Ensure the players don't immediately fall to their deaths in the nether
-                            NETHER_BRICKS, // Nether fortresses (contain blaze spawners!)
-                            SPAWNER // Blaze spawners
+                            NETHER_BRICKS, // Nether fortresses
+                            SPAWNER // Blaze spawners (already preserved by NETHER_BRICKS)
                     );
 
                     // Link the deleted chunks to the world seed; make sure the random number generator actually
